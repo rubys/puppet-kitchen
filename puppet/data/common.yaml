@@ -33,5 +33,55 @@ ulimit::rule:
 timezone::timezone: 'Etc/UTC'
 timezone::hw_utc: true
 
+# Symptom:
+# 
+#   Error: Could not find data item ssh::params::sshd_keysdir in any Hiera
+#   data file and no default supplied at
+#   /tmp/kitchen/modules/whimsy_server/manifests/init.pp:8 on node
+#   default-ubuntu1464
+#
+# Solution:
+#
 ssh::params::sshd_keysdir: '/etc/ssh/ssh_keys'
 
+#
+# Symptom:
+#
+#   Error: Could not find data item s3fs::aws_access_key_id in any Hiera
+#   data file and no default supplied at
+#   /tmp/kitchen/modules/zmanda_asf/manifests/client.pp:15 on node
+#   default-ubuntu1464
+#
+# Solution:
+#
+s3fs::aws_access_key_id: ''
+s3fs::aws_secret_access_key: ''
+
+#
+# Symptom:
+#
+#   Error: Could not find data item zmanda_asf::amdump_public_key in any
+#   Hiera data file and no default supplied at
+#   /tmp/kitchen/modules/zmanda_asf/manifests/client.pp:80 on node
+#   default-ubuntu1464
+#
+# Solution:
+#
+zmanda_asf::amdump_private_key: ''
+zmanda_asf::amdump_public_key: ''
+
+#
+# Symptom:
+#   Error: /usr/local/bin/aws s3 cp
+#   s3://asf-private/packages/amanda-enterprise-backup-client_3.3.9-1Ubuntu1404_amd64.tar
+#   /root returned 1 instead of one of [0]
+#
+# Solution:
+#
+#   Patch zmanda_asf/manifests/client.pp as follows:
+#
+#    -if $::lsbdistcodename == 'trusty' {
+#    +if $::lsbdistcodename == 'trusty' and ! hiera('devbox') {
+#
+# and then
+devbox: true
